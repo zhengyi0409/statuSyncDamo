@@ -1,15 +1,22 @@
 
+var DIRECTION =
+{
+    LEFT: -1,
+    RIGHT: 1
+};
+
 cc.Class({
     extends: cc.Component,
 
     properties: {
         anim: cc.Node,
-
     },
 
 
     onLoad () {
         this.curState = ""
+        this.curDirection = DIRECTION.RIGHT
+        this.anim.scaleX = DIRECTION.RIGHT * 0.2
     },
 
     start () {
@@ -26,10 +33,18 @@ cc.Class({
     },
 
     // 更改状态
-    toState(state, cb) {
-        if (state == this.curState) return
-        this.curState = state
-        this.changeState(state, cb)
+    toState(entity,cb) {
+        // 方向
+        if(this.curDirection != entity.direction){
+            this.curDirection = entity.direction
+            this.anim.scaleX = entity.direction * 0.2
+        }
+        // 坐标
+        this.node.x = entity.x
+        // 状态
+        if (entity.status == this.curState) return
+        this.curState = entity.status
+        this.changeState(entity.status, cb)
     },
 
     changeState(state, cb) {

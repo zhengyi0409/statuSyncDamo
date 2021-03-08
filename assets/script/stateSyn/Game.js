@@ -3,33 +3,34 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        client:cc.Prefab,
-        server:cc.Prefab, // 客户端本地模拟服务端
+        clientItem:cc.Prefab,
+        serverItem:cc.Prefab, // 客户端本地模拟服务端
         bg:cc.Node,
 
     },
 
 
     onLoad () {
-        let client1 = cc.instantiate(this.client);
-        client1.parent = this.bg
-        client1.position = cc.v2(-this.bg.width / 4,this.bg.height / 4 + 50)
-        let script1 = client1.getComponent("Client");
-        script1.setTitle("client1")
+        var clientItem1 = cc.instantiate(this.clientItem);
+        clientItem1.parent = this.bg
+        clientItem1.position = cc.v2(-this.bg.width / 4,this.bg.height / 4 + 50)
+        this.client1 = clientItem1.getComponent("Client");
+        this.client1.setTitle("client1")
 
 
-        let client2 = cc.instantiate(this.client);
-        client2.parent = this.bg
-        client2.position = cc.v2(-this.bg.width / 4,-this.bg.height / 4 + 50)
-        let script2 = client2.getComponent("Client");
-        script2.setTitle("client2")
+        var clientItem2 = cc.instantiate(this.clientItem);
+        clientItem2.parent = this.bg
+        clientItem2.position = cc.v2(-this.bg.width / 4,-this.bg.height / 4 + 50)
+        this.client2 = clientItem2.getComponent("Client");
+        this.client2.setTitle("client2")
 
 
-        let server = cc.instantiate(this.server);
-        server.parent = this.bg
-        server.position = cc.v2(-this.bg.width / 4,50)
-        server.getComponent("Server").connect(script1)
-        server.getComponent("Server").connect(script2)
+        var serverItem = cc.instantiate(this.serverItem);
+        serverItem.parent = this.bg
+        serverItem.position = cc.v2(-this.bg.width / 4,50)
+        this.server = serverItem.getComponent("Server")
+        this.server.connect(this.client1)
+        this.server.connect(this.client2)
 
     },
 
@@ -47,16 +48,20 @@ cc.Class({
     onKeyDown: function (event) {
         switch(event.keyCode) {
             case cc.macro.KEY.a:
-                console.log('Press a key');
+                //console.log('Press a key');
+                this.client2.key_left = true
                 break;
             case cc.macro.KEY.d:
-                console.log('Press d key');
+                //console.log('Press d key');
+                this.client2.key_right = true
                 break;
             case cc.macro.KEY.left:
-                console.log('Press left key');
+                //console.log('Press left key');
+                this.client1.key_left = true
                 break;
             case cc.macro.KEY.right:
-                console.log('Press right key');
+                //console.log('Press right key');
+                this.client1.key_right = true
                 break;
         }
     },
@@ -64,18 +69,27 @@ cc.Class({
     onKeyUp: function (event) {
         switch(event.keyCode) {
             case cc.macro.KEY.a:
-                console.log('release a key');
+                //console.log('release a key');
+                this.client2.key_left = false
+                this.client2.key_right = false
                 break;
             case cc.macro.KEY.d:
-                console.log('release d key');
+                //console.log('release d key');
+                this.client2.key_left = false
+                this.client2.key_right = false
                 break;
             case cc.macro.KEY.left:
-                console.log('release left key');
+                //console.log('release left key');
+                this.client1.key_left = false
+                this.client1.key_right = false
                 break;
             case cc.macro.KEY.right:
-                console.log('release right key');
+                //console.log('release right key');
+                this.client1.key_left = false
+                this.client1.key_right = false
                 break;
         }
     }
+
     //update (dt) {},
 });

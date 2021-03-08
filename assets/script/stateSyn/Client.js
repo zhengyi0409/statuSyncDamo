@@ -31,24 +31,25 @@ cc.Class({
         // input state
         this.key_left = false;
         this.key_right = false;
+        this.key_nothing = false
 
         // Simulated network connection. 模拟网络连接
         this.network = new Network();
         this.server = null;
-        this.lag = 0; // 单向发送数据延迟时长
+        this.lag = 100; // 单向发送数据延迟时长
 
         // Unique ID of our entity. Assigned by Server on connection.
         // 我们实体的唯一ID。由服务器在连接时分配
         this.entity_id = null;
 
         // Data needed for reconciliation 协调
-        this.client_side_prediction = false;  // 客户端预测
-        this.server_reconciliation = false;   // 服务端协调
+        this.client_side_prediction = true;  // 客户端预测
+        this.server_reconciliation = true;   // 服务端协调
         this.input_sequence_number = 0;        // input序列号
         this.pending_inputs = [];              // 将所有未收到回复但已经发送给服务器的输入用于预测(待服务端确认队列)
 
         // Entity interpolation toggle. 插值开关
-        this.entity_interpolation = false;
+        this.entity_interpolation = true;
 
 
         // Update rate 设置频率
@@ -111,8 +112,7 @@ cc.Class({
                 this.plays[entity.entity_id] = node
             }
             var play = this.plays[entity.entity_id]
-            play.getComponent("Play").toState(entity.status)
-            play.x = entity.x
+            play.getComponent("Play").toState(entity)
         }
     },
 
@@ -130,17 +130,27 @@ cc.Class({
         var input;
         if(this.key_right){
             input = {press_time:dt_sec}
+            this.key_nothing = false
         }else if(this.key_left){
             input = {press_time:-dt_sec}
+            this.key_nothing = false
         }else{
             // Nothing interesting happened.
-            return
+            if(!this.entities[this.entity_id]){
+                return
+            }
+            if(this.key_nothing){
+                return
+            }
+            input = {press_time:0}
+            this.key_nothing = true
         }
 
         // Send the input to the server.
         input.input_sequence_number = this.input_sequence_number ++;
         input.entity_id = this.entity_id
         this.server.network.send(this.lag,input)  // 模拟网络，客户端使用this.server.network.send 发送数据，服务端使用this.server.network.receive()接受数据
+
 
         // Do client-side prediction
         // 执行客户端预测
@@ -150,6 +160,7 @@ cc.Class({
 
         // Save this input for later reconciliation
         this.pending_inputs.push(input);
+
     },
 
     // 存储或者更新服务端发送过来的状态
@@ -174,6 +185,9 @@ cc.Class({
                 }
 
                 var entity = this.entities[state.entity_id]
+                entity.direction = state.direction
+                entity.status = state.status
+
                 if(state.entity_id == this.entity_id){
                     // Received the authoritative position of this client's entity.
                     entity.x = state.position;

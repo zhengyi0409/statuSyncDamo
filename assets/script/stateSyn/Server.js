@@ -106,6 +106,8 @@ cc.Class({
             var entity = this.entities[i];
             world_state.push({entity_id: entity.entity_id,
                 position: entity.x,
+                status:entity.status,
+                direction:entity.direction,
                 last_processed_input: this.last_processed_input[i]});
         }
 

@@ -174,7 +174,7 @@
       "array": [
         0,
         0,
-        481.726630855094,
+        480.84707380437544,
         0,
         0,
         0,
@@ -379,10 +379,10 @@
       "__id__": 2
     },
     "_enabled": true,
-    "client": {
+    "clientItem": {
       "__uuid__": "c4bc4e8b-dfd5-46eb-800b-66c98320421e"
     },
-    "server": {
+    "serverItem": {
       "__uuid__": "a6c0e6fc-edad-4b93-b7b9-d32b0cacc5cd"
     },
     "bg": {

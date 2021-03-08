@@ -18,6 +18,10 @@ cc.Class({
     },
 
     // "Send" a message. Store each message with the timestamp when it should be received, to simulate lag.
+    // var input;
+    // input.press_time:-dt_sec
+    // input.input_sequence_number = this.input_sequence_number ++;
+    // input.entity_id = this.entity_id
     send(lag_ms,message) {
         this.messages.push({recv_ts:+ new Date() + lag_ms,payload:message});
     },
